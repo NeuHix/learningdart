@@ -64,8 +64,7 @@ class _RegisterViewState extends State<RegisterView> {
                         autocorrect: false,
 
                       ),
-
-                      TextButton(
+                      ElevatedButton(
                         onPressed: () async {
                           await Firebase.initializeApp(
                             options: DefaultFirebaseOptions.currentPlatform,
@@ -81,26 +80,30 @@ class _RegisterViewState extends State<RegisterView> {
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'email-already-in-use') {
                               try {
-                                print(
-                                    'User Found with this Email. Logging In...');
+                                Text('Emali Already in Use.');
                                 FirebaseAuth.instance
                                     .signInWithEmailAndPassword(email: email,
                                     password: password);
                               } on FirebaseAuthException catch (t) {
                                 print(e.code);
                                 if (t.code == 'wrong-password') {
-                                  print('Wrong Password');
+                                  const Text('data');
                                 }
                               }
                             } else if (e.code == 'weak-password') {
                               print('Weak password');
                             }  else if (e.code == 'invalid-email') {
                               print('Invalid Email ');
+                            }  else if (e.code == 'wrong-password') {
+                              print('Wrong');
                             }
                           }
                         },
                         child: const Text('Register as a New User'),
                       ),
+
+
+
                     ]
                 );
               default:
