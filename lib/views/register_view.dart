@@ -13,6 +13,7 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
+  // late final TextEditingController _user_name;
 
   @override
   void initState() {
@@ -42,69 +43,91 @@ class _RegisterViewState extends State<RegisterView> {
 
             switch (snapshot.connectionState) {
               case ConnectionState.done:
-                return Column(
-                    children: [
-                      TextField(
-                        controller: _email,
-                        decoration: const InputDecoration(
-                            hintText: 'Email'
+                return Scaffold(
+                  body: Column(
+                      children: [
+                        // TextField(
+                        //   controller: _user_name,
+                        //   decoration: const InputDecoration(
+                        //       hintText: 'Name'
+                        //   ),
+                        //   obscureText: true,
+                        //   enableSuggestions: false,
+                        //   autocorrect: false,
+                        //
+                        // ),
+                        TextField(
+                          controller: _email,
+                          decoration: const InputDecoration(
+                              hintText: 'Email'
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          obscureText: false,
+                          enableSuggestions: true,
+                          autocorrect: false,
                         ),
-                        keyboardType: TextInputType.emailAddress,
-                        obscureText: false,
-                        enableSuggestions: true,
-                        autocorrect: false,
-                      ),
-                      TextField(
-                        controller: _password,
-                        decoration: const InputDecoration(
-                            hintText: 'Paasword'
+                        TextField(
+                          controller: _password,
+                          decoration: const InputDecoration(
+                              hintText: 'Paasword'
+                          ),
+                          obscureText: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
+
                         ),
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
+                        ElevatedButton(
+                          onPressed: () async {
+                            await Firebase.initializeApp(
+                              options: DefaultFirebaseOptions.currentPlatform,
+                            );
+                            final email = _email.text;
+                            final password = _password.text;
+                            // final username = _user_name;
 
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          await Firebase.initializeApp(
-                            options: DefaultFirebaseOptions.currentPlatform,
-                          );
-                          final email = _email.text;
-                          final password = _password.text;
-
-                          try {
-                            final userCredential = await
-                            FirebaseAuth.instance.createUserWithEmailAndPassword(
-                                email: email,
-                                password: password);
-                          } on FirebaseAuthException catch (e) {
-                            if (e.code == 'email-already-in-use') {
-                              try {
-                                Text('Emali Already in Use.');
-                                FirebaseAuth.instance
-                                    .signInWithEmailAndPassword(email: email,
-                                    password: password);
-                              } on FirebaseAuthException catch (t) {
-                                print(e.code);
-                                if (t.code == 'wrong-password') {
-                                  const Text('data');
+                            try {
+                              final userCredential = await
+                              FirebaseAuth.instance.createUserWithEmailAndPassword(
+                                  email: email,
+                                  password: password
+                                  );
+                            } on FirebaseAuthException catch (e) {
+                              if (e.code == 'email-already-in-use') {
+                                try {
+                                  Text('Emali Already in Use.');
+                                  FirebaseAuth.instance
+                                      .signInWithEmailAndPassword(email: email,
+                                      password: password);
+                                } on FirebaseAuthException catch (t) {
+                                  print(e.code);
+                                  if (t.code == 'wrong-password') {
+                                    const Text('data');
+                                  }
                                 }
+                              } else if (e.code == 'weak-password') {
+                                print('Weak password');
+                              }  else if (e.code == 'invalid-email') {
+                                print('Invalid Email ');
+                              }  else if (e.code == 'wrong-password') {
+                                print('Wrong');
                               }
-                            } else if (e.code == 'weak-password') {
-                              print('Weak password');
-                            }  else if (e.code == 'invalid-email') {
-                              print('Invalid Email ');
-                            }  else if (e.code == 'wrong-password') {
-                              print('Wrong');
                             }
-                          }
-                        },
-                        child: const Text('Register as a New User'),
-                      ),
+                          },
+                          child: const Text('Register as a New User'),
+                        ),
+
+                        OutlinedButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamedAndRemoveUntil('/login/', (route) => false);
+                            },
+
+                            child: const Text("Member? Come Here!")
+
+                        )
 
 
-
-                    ]
+                      ]
+                  ),
                 );
               default:
                 return Scaffold(

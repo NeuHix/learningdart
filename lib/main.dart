@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:learningdart/firebase_options.dart';
+import 'VerifyEmailView.dart';
 import 'views/Login_View.dart';
 import 'views/register_view.dart';
 
@@ -26,10 +27,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.red,
-
-      ),
-      home: const HomePage(),
+        primarySwatch: Colors.red,),
+      home: const LoginView(),
+      routes: {
+        '/login/': (context) => const LoginView(),
+        "/register/": (context) => const RegisterView()
+      },
     );
   }
 }
@@ -52,11 +55,15 @@ class HomePage extends StatelessWidget {
             case ConnectionState.done:
               final user  = FirebaseAuth.instance.currentUser;
               if (user?.emailVerified == true) {
-                print('WooHoo! Verifired Email.');
+                return Text('Done!');
+              } else if (user?.emailVerified == false) {
+                print(user);
+                return VerifyEmailView();
+              } else if (user?.isAnonymous == true) {
+                return LoginView();
               } else {
-                print('Fuck you bitch!');
+                return LoginView();
               }
-              return Text('Done.');
             default:
               return Text('Still Loading');
           }

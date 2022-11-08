@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/arctrus/learningdart/build/firebase_core/intermediates/merged_res/release/drawable/notification_bg_low.xml",
+        "source": "/home/arctrus/.gradle/caches/transforms-3/b11c0e2c212c747cb4bcf29314469768/transformed/core-1.6.0/res/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "/home/arctrus/learningdart/build/firebase_core/intermediates/merged_res/release/drawable/notification_icon_background.xml",
+        "source": "/home/arctrus/.gradle/caches/transforms-3/b11c0e2c212c747cb4bcf29314469768/transformed/core-1.6.0/res/drawable/notification_icon_background.xml"
+    },
+    {
+        "merged": "/home/arctrus/learningdart/build/firebase_core/intermediates/merged_res/release/drawable/notification_tile_bg.xml",
+        "source": "/home/arctrus/.gradle/caches/transforms-3/b11c0e2c212c747cb4bcf29314469768/transformed/core-1.6.0/res/drawable/notification_tile_bg.xml"
+    },
+    {
+        "merged": "/home/arctrus/learningdart/build/firebase_core/intermediates/merged_res/release/drawable/notification_bg.xml",
+        "source": "/home/arctrus/.gradle/caches/transforms-3/b11c0e2c212c747cb4bcf29314469768/transformed/core-1.6.0/res/drawable/notification_bg.xml"
+    }
+]

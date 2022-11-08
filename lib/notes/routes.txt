@@ -1,0 +1,15 @@
+Routes are a like pages that can be traveled to through anywhere.
+Two routes --> Anonymous & Named.
+
+Anonymous ones can't be reused since they don't have names or strings through which
+can refer them.
+
+Named routes can be reused and they have their names -- strings -- through which can
+refer them.
+Upon calling the routes through their name, they will call a builder function.
+that will build the view you wanted.
+
+That's what they do, they take a string and a builder function as their input.
+
+And hey guess what they are, they are Maps , aka Dictionaries.
+they contain key-value pairs.

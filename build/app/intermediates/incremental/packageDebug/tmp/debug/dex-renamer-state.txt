@@ -1,0 +1,4 @@
+#Tue Nov 08 12:58:45 IST 2022
+base.0=/home/arctrus/learningdart/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

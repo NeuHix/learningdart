@@ -54,66 +54,73 @@ class _LoginViewState extends State<LoginView> {
 
             switch (snapshot.connectionState) {
               case ConnectionState.done:
-                return Column(
-                    children: [
-                      TextField(
-                        controller: _email,
-                        decoration: const InputDecoration(
-                            hintText: 'Email'
-
-                        ),
-                        keyboardType: TextInputType.emailAddress,
-                        obscureText: false,
-                        autofillHints: ['@duck.com','@gmail.com'],
-
-                        enableSuggestions: true,
-                        autocorrect: false,
-                      ),
-                      TextField(
-                        controller: _password,
-                        decoration: const InputDecoration(
-                            hintText: 'Paasword'
-                        ),
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-
-                      ),
-
-                      TextButton(
-                        onPressed: () async {
-                          await Firebase.initializeApp(
-                            options: DefaultFirebaseOptions.currentPlatform,
-                          );
-                          final email = _email.text;
-                          final password = _password.text;
-
-                          try {
-                            final userCredential = await
-                            FirebaseAuth.instance.signInWithEmailAndPassword(
-                                email: email,
-                                password: password);
-                          } on FirebaseAuthException catch (e) {
-                            FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-                          } catch (f) {
-                            print(f);
-                          }
-
-
-                        },
-                        child: const Text('Login Now.'),
-                      ),
-                    ]
-                );
-              default:
                 return Scaffold(
-                  appBar: AppBar(
-                    title: const Text("Check Intenet!"),
+                  body: Column(
+                      children: [
+                        TextField(
+                          controller: _email,
+                          decoration: const InputDecoration(
+                              hintText: 'Email'
+
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          obscureText: false,
+                          autofillHints: ['@duck.com','@gmail.com'],
+
+                          enableSuggestions: true,
+                          autocorrect: false,
+                        ),
+                        TextField(
+                          controller: _password,
+                          decoration: const InputDecoration(
+                              hintText: 'Paasword'
+                          ),
+                          obscureText: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
+
+                        ),
+
+                        ElevatedButton(
+                          onPressed: () async {
+                            await Firebase.initializeApp(
+                              options: DefaultFirebaseOptions.currentPlatform,
+                            );
+                            final email = _email.text;
+                            final password = _password.text;
+
+                            try {
+                              final userCredential = await
+                              FirebaseAuth.instance.signInWithEmailAndPassword(
+                                  email: email,
+                                  password: password);
+                            } on FirebaseAuthException catch (e) {
+                              FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+                            } catch (f) {
+                              print(f);
+                            }
+
+
+                          },
+                          child: const Text('Login Now.'),
+
+
+                        ),
+
+                        OutlinedButton(
+                            onPressed: () {
+                                Navigator.of(context).pushNamedAndRemoveUntil('/register/', (route) => false);
+                          },
+
+                            child: const Text("Don't have one? Create.")
+
+                        )
+                      ]
                   ),
                 );
+              default:
+                return const Text("Check Internet!");
             }
-
-
           },
 
         )
