@@ -2,15 +2,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:learningdart/firebase_options.dart';
+import 'package:learningdart/views/LandingView.dart';
 import 'VerifyEmailView.dart';
 import 'views/Login_View.dart';
 import 'views/register_view.dart';
+import 'views/LandingView.dart';
+
 
 /// StatefulWidget are things that gonna be changed
 /// during user interaction like the counter in here, changing texts etc.
 ///
 /// StatelessWidget aren't gonna be changed during
 /// user interaction like icon, buttons, text.
+
+enum Actions {
+  logout
+
+}
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,11 +36,13 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.red,),
-      home: const LoginView(),
+      home: const HomePage(),
       routes: {
         '/login/': (context) => const LoginView(),
-        "/register/": (context) => const RegisterView()
+        "/register/": (context) => const RegisterView(),
+        "landingview": (context) => const LandingPage(),
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -55,17 +65,17 @@ class HomePage extends StatelessWidget {
             case ConnectionState.done:
               final user  = FirebaseAuth.instance.currentUser;
               if (user?.emailVerified == true) {
-                return Text('Done!');
+                return const LandingPage();
               } else if (user?.emailVerified == false) {
                 print(user);
-                return VerifyEmailView();
+                return const VerifyEmailView();
               } else if (user?.isAnonymous == true) {
-                return LoginView();
+                return const LoginView();
               } else {
-                return LoginView();
+                return const LoginView();
               }
             default:
-              return Text('Still Loading');
+              return const CircularProgressIndicator();
           }
         },
       ),
