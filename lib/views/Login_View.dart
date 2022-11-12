@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:learningdart/views/LandingView.dart';
 import 'package:learningdart/views/register_view.dart';
 import '../firebase_options.dart';
+import 'dart:developer' as dev show log;
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -140,15 +141,29 @@ class _LoginViewState extends State<LoginView> {
                             final password = _password.text;
 
                             try {
-                              final userCredential = await
-                              FirebaseAuth.instance.signInWithEmailAndPassword(
-                                  email: email,
-                                  password: password);
-                            Navigator.of(context).pushNamedAndRemoveUntil('landingview', (route) => false);
+                              Navigator.of(context).pushNamedAndRemoveUntil('landingview', (route) => false);
+                              FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+                              // Future<UserCredential> userCredential;
+                              // FutureBuilder(
+                              //   future:
+                              //   builder: (BuildContext context,snapshot) {
+                              //     switch (snapshot.connectionState) {
+                              //       case ConnectionState.active:
+                              //         return const CircularProgressIndicator();
+                              //       // case ConnectionState.done:
+                              //       //   return
+                              //       default:
+                              //         return const CircularProgressIndicator();
+                              //     }
+                              //   }
+                              //   ,
+                              // );
+
+
                             } on FirebaseAuthException catch (e) {
-                              print(e.code);
+                              dev.log(e.code);
                             } catch (f) {
-                              print(f);
+                              dev.log(f.toString());
                             }
 
 
@@ -162,7 +177,7 @@ class _LoginViewState extends State<LoginView> {
 
                         OutlinedButton(
                             onPressed: () {
-                              Navigator.of(context).pushNamedAndRemoveUntil("/landingView", (route) => false);
+                              Navigator.of(context).pushNamedAndRemoveUntil('/register/', (route) => false);
                           },
 
                             child: const Text("Don't have one? Create.")
@@ -172,7 +187,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                 );
               default:
-                return const Text("Check Internet!");
+                return const CircularProgressIndicator();
             }
           },
 

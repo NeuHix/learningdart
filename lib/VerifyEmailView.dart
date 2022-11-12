@@ -29,8 +29,17 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       ),
       body: Column(
         children: [
-          Text('Click the thing below to get the verification link.'),
+          const SizedBox(
+            width: 400,
+            height: 30,
+          ),
 
+
+          Text('Click the thing below to get the verification link.'),
+          const SizedBox(
+            width: 400,
+            height: 30,
+          ),
           ElevatedButton(
               onPressed:  () async {
                 final user = FirebaseAuth.instance.currentUser;
@@ -38,6 +47,11 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
 
               },
               child: const Text("Send Link"),
+          ),
+
+          const SizedBox(
+            width: 400,
+            height: 100,
           ),
 
           Text("Status: $status"),

@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as dev show log;
+
+
+import 'package:fluttertoast/fluttertoast.dart';
 
 enum Actions {
   logout,
@@ -23,16 +26,24 @@ class _LandingPageState extends State<LandingPage> {
         actions: [
           PopupMenuButton(onSelected: (value) async {
               switch (value) {
-                case Actions.yes:
-                  final shouldLogout = await showLogOutDialog(context);
-                  dev.log(shouldLogout.toString());
-                  break;
                 case Actions.logout:
                   print("No I wouldn't.");
-
-                  break;
-                case Actions.no:
-                  // TODO: Handle this case.
+                  final shouldLogout = await showLogOutDialog(context);
+                  if (shouldLogout) {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/login/',
+                          (route) => false,);
+                  } else {
+                    Fluttertoast.showToast(
+                        msg: "Never do that Again!",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
+                  }
                   break;
               }
           },itemBuilder: (context) {

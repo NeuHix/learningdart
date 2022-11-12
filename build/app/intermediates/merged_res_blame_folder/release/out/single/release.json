@@ -8,6 +8,14 @@
         "source": "/home/arctrus/.gradle/caches/transforms-3/2f3aa72464889ee04298a4429d23aa5e/transformed/jetified-play-services-base-17.1.0/res/drawable-mdpi-v4/googleg_standard_color_18.png"
     },
     {
+        "merged": "/home/arctrus/learningdart/build/app/intermediates/merged_res/release/drawable_corner.xml.flat",
+        "source": "/home/arctrus/learningdart/build/fluttertoast/intermediates/packaged_res/release/drawable/corner.xml"
+    },
+    {
+        "merged": "/home/arctrus/learningdart/build/app/intermediates/merged_res/release/drawable_toast_bg.xml.flat",
+        "source": "/home/arctrus/learningdart/build/fluttertoast/intermediates/packaged_res/release/drawable/toast_bg.xml"
+    },
+    {
         "merged": "/home/arctrus/learningdart/build/app/intermediates/merged_res/release/layout_notification_action_tombstone.xml.flat",
         "source": "/home/arctrus/.gradle/caches/transforms-3/b11c0e2c212c747cb4bcf29314469768/transformed/core-1.6.0/res/layout/notification_action_tombstone.xml"
     },
@@ -178,6 +186,10 @@
     {
         "merged": "/home/arctrus/learningdart/build/app/intermediates/merged_res/release/drawable-mdpi-v4_common_google_signin_btn_text_light_normal_background.9.png.flat",
         "source": "/home/arctrus/.gradle/caches/transforms-3/2f3aa72464889ee04298a4429d23aa5e/transformed/jetified-play-services-base-17.1.0/res/drawable-mdpi-v4/common_google_signin_btn_text_light_normal_background.9.png"
+    },
+    {
+        "merged": "/home/arctrus/learningdart/build/app/intermediates/merged_res/release/layout_toast_custom.xml.flat",
+        "source": "/home/arctrus/learningdart/build/fluttertoast/intermediates/packaged_res/release/layout/toast_custom.xml"
     },
     {
         "merged": "/home/arctrus/learningdart/build/app/intermediates/merged_res/release/mipmap-hdpi_ic_launcher.png.flat",

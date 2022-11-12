@@ -6,7 +6,7 @@ import 'package:learningdart/views/LandingView.dart';
 import 'VerifyEmailView.dart';
 import 'views/Login_View.dart';
 import 'views/register_view.dart';
-import 'views/LandingView.dart';
+
 
 
 /// StatefulWidget are things that gonna be changed
@@ -64,14 +64,17 @@ class HomePage extends StatelessWidget {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               final user  = FirebaseAuth.instance.currentUser;
+              print(user);
               if (user?.emailVerified == true) {
                 return const LandingPage();
               } else if (user?.emailVerified == false) {
                 print(user);
                 return const VerifyEmailView();
-              } else if (user?.isAnonymous == true) {
-                return const LoginView();
+              } else if (user?.isAnonymous == true || user == null) {
+                print(user);
+                return const RegisterView();
               } else {
+                print(user);
                 return const LoginView();
               }
             default:

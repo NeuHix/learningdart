@@ -30,6 +30,19 @@
       externalAnnotations="annotations.zip"
       proguardRules="proguard.txt"/>
   <library
+      name="/home/arctrus/learningdart/android@@:fluttertoast::release"
+      jars="/home/arctrus/learningdart/build/fluttertoast/.transforms/227b0cc7c2c1c26ff1af96248dd0f620/transformed/out/jars/classes.jar"
+      resolved="com.example.FlutterToast:fluttertoast:unspecified"
+      folder="/home/arctrus/learningdart/build/fluttertoast/.transforms/227b0cc7c2c1c26ff1af96248dd0f620/transformed/out"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
       name="io.flutter:flutter_embedding_release:1.0.0-3ad69d7be3a7231aab5525db322fc699f098315f@jar"
       jars="/home/arctrus/.gradle/caches/modules-2/files-2.1/io.flutter/flutter_embedding_release/1.0.0-3ad69d7be3a7231aab5525db322fc699f098315f/53258bc6e5597dff366c50cbedde92d8d48f40a9/flutter_embedding_release-1.0.0-3ad69d7be3a7231aab5525db322fc699f098315f.jar"
       resolved="io.flutter:flutter_embedding_release:1.0.0-3ad69d7be3a7231aab5525db322fc699f098315f"/>
