@@ -6,8 +6,8 @@ import 'package:learningdart/views/LandingView.dart';
 import 'VerifyEmailView.dart';
 import 'views/Login_View.dart';
 import 'views/register_view.dart';
-
-
+import 'constants/routes.dart';
+import 'dart:developer' as dev show log;
 
 /// StatefulWidget are things that gonna be changed
 /// during user interaction like the counter in here, changing texts etc.
@@ -27,7 +27,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  MyApp.forDesignTime();
+
 
   // This widget is the root of your application.
   @override
@@ -38,9 +38,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,),
       home: const HomePage(),
       routes: {
-        '/login/': (context) => const LoginView(),
-        "/register/": (context) => const RegisterView(),
-        "landingview": (context) => const LandingPage(),
+        loginPage: (context) => const LoginView(),
+        registerPage: (context) => const RegisterView(),
+        homePage: (context) => const LandingPage(),
       },
       debugShowCheckedModeBanner: false,
     );
@@ -64,17 +64,17 @@ class HomePage extends StatelessWidget {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               final user  = FirebaseAuth.instance.currentUser;
-              print(user);
+              dev.log(user.toString());
               if (user?.emailVerified == true) {
                 return const LandingPage();
               } else if (user?.emailVerified == false) {
-                print(user);
+                dev.log(user.toString());
                 return const VerifyEmailView();
               } else if (user?.isAnonymous == true || user == null) {
-                print(user);
+                dev.log(user.toString());
                 return const RegisterView();
               } else {
-                print(user);
+                dev.log(user.toString());
                 return const LoginView();
               }
             default:

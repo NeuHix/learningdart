@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-
+import 'dart:developer' as dev show log;
 
 var status = "Not Verified";
 void changeStatusToVerified() {
@@ -24,7 +22,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text('Verify Email'),
+        title:  const Text('Verify Email'),
         backgroundColor: Colors.amber,
       ),
       body: Column(
@@ -35,7 +33,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
           ),
 
 
-          Text('Click the thing below to get the verification link.'),
+          const Text('Click the thing below to get the verification link.'),
           const SizedBox(
             width: 400,
             height: 30,
@@ -59,7 +57,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
           ElevatedButton(
               onPressed: () {
                   final user = FirebaseAuth.instance.currentUser;
-                  print(user);
+                  dev.log(user.toString());
                   if (user?.emailVerified == true) {
                       changeStatusToVerified();
 

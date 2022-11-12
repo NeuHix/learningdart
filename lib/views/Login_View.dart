@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:learningdart/views/LandingView.dart';
-import 'package:learningdart/views/register_view.dart';
+import 'package:learningdart/constants/routes.dart';
 import '../firebase_options.dart';
 import 'dart:developer' as dev show log;
 
@@ -12,7 +11,6 @@ class LoginView extends StatefulWidget {
   @override
   State<LoginView> createState() => _LoginViewState();
 
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
@@ -20,11 +18,7 @@ class LoginView extends StatefulWidget {
         primarySwatch: Colors.blue,
       ),
       home: const LoginView(),
-      routes: {
-        '/login/': (context) => const LoginView(),
-        "/register/": (context) => const RegisterView(),
-        "landingview": (context) => const LandingPage(),
-      },
+
     );
   }
 }
@@ -141,7 +135,7 @@ class _LoginViewState extends State<LoginView> {
                             final password = _password.text;
 
                             try {
-                              Navigator.of(context).pushNamedAndRemoveUntil('landingview', (route) => false);
+                              Navigator.of(context).pushNamedAndRemoveUntil(homePage, (route) => false);
                               FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
                               // Future<UserCredential> userCredential;
                               // FutureBuilder(
@@ -177,7 +171,7 @@ class _LoginViewState extends State<LoginView> {
 
                         OutlinedButton(
                             onPressed: () {
-                              Navigator.of(context).pushNamedAndRemoveUntil('/register/', (route) => false);
+                              Navigator.of(context).pushNamedAndRemoveUntil(registerPage, (route) => false);
                           },
 
                             child: const Text("Don't have one? Create.")

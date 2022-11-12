@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
+import 'dart:developer' as dev show log;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:learningdart/constants/routes.dart';
 
 enum Actions {
   logout,
-  yes,
-  no,
+
 }
 
 class LandingPage extends StatefulWidget {
@@ -27,12 +27,13 @@ class _LandingPageState extends State<LandingPage> {
           PopupMenuButton(onSelected: (value) async {
               switch (value) {
                 case Actions.logout:
-                  print("No I wouldn't.");
+                  dev.log("No I wouldn't.");
                   final shouldLogout = await showLogOutDialog(context);
                   if (shouldLogout) {
                     await FirebaseAuth.instance.signOut();
+
                     Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/login/',
+                        loginPage,
                           (route) => false,);
                   } else {
                     Fluttertoast.showToast(

@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:learningdart/constants/routes.dart';
 import '../firebase_options.dart';
+import 'dart:developer' as dev show log;
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -117,10 +119,12 @@ class _RegisterViewState extends State<RegisterView> {
                         maxLength: 9,
                       ),
                     ),
-                    SizedBox(
+
+                    const SizedBox(
                       width: 400,
                       height: 20,
                     ),
+
                     ElevatedButton(
                       onPressed: () async {
                         await Firebase.initializeApp(
@@ -131,27 +135,27 @@ class _RegisterViewState extends State<RegisterView> {
                         // final username = _user_name;
 
                         try {
-                          final userCredential = await FirebaseAuth.instance
+                          await FirebaseAuth.instance
                               .createUserWithEmailAndPassword(
                                   email: email, password: password);
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'email-already-in-use') {
                             try {
-                              Text('Emali Already in Use.');
+                              const Text('Emali Already in Use.');
                               FirebaseAuth.instance.signInWithEmailAndPassword(
                                   email: email, password: password);
                             } on FirebaseAuthException catch (t) {
-                              print(e.code);
+                              dev.log(e.code);
                               if (t.code == 'wrong-password') {
                                 const Text('data');
                               }
                             }
                           } else if (e.code == 'weak-password') {
-                            print('Weak password');
+                            dev.log('Weak password');
                           } else if (e.code == 'invalid-email') {
-                            print('Invalid Email ');
+                            dev.log('Invalid Email ');
                           } else if (e.code == 'wrong-password') {
-                            print('Wrong');
+                            dev.log('Wrong');
                           }
                         }
                       },
@@ -161,7 +165,7 @@ class _RegisterViewState extends State<RegisterView> {
                     OutlinedButton(
                         onPressed: () {
                           Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/login/', (route) => false);
+                              loginPage, (route) => false);
                         },
                         child: const Text("Member? Come Here!"))
                   ]),
