@@ -104,7 +104,7 @@ class _LoginViewState extends State<LoginView> {
                           child: TextField(
                             controller: _password,
                             decoration: const InputDecoration(
-                              hintText: 'Password max 9 characters',
+                              hintText: 'Password max 15 characters',
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey, width: 0.0),
                               ),
@@ -137,30 +137,12 @@ class _LoginViewState extends State<LoginView> {
                             final password = _password.text;
 
                             try {
-                              await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
 
-                              final user = FirebaseAuth.instance.currentUser;
+                              await FirebaseAuth.instance.signInWithEmailAndPassword(email: email,
+                                  password: password,);
+                              Navigator.of(context).pushNamedAndRemoveUntil(homePage, (route) => false);
 
-                              if (user?.emailVerified == true) {
-                                Navigator.of(context).pushNamedAndRemoveUntil(homePage, (route) => false);
-                              } else if (user?.emailVerified == false) {
-                                Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailPage, (route) => false);
-                              }
-                              // Future<UserCredential> userCredential;
-                                  // FutureBuilder(
-                                  //   future:
-                                  //   builder: (BuildContext context,snapshot) {
-                                  //     switch (snapshot.connectionState) {
-                                  //       case ConnectionState.active:
-                                  //         return const CircularProgressIndicator();
-                                  //       // case ConnectionState.done:
-                                  //       //   return
-                                  //       default:
-                                  //         return const CircularProgressIndicator();
-                                  //     }
-                                  //   }
-                                  //   ,
-                                  // );
+
                             } on FirebaseAuthException catch (e) {
 
                               switch (e.code) {
@@ -207,6 +189,10 @@ class _LoginViewState extends State<LoginView> {
 
     );
   }
+}
+
+void afterLoginOperation() {
+
 }
 
 

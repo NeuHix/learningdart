@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.red,),
-      home: const HomePage(),
+      home: const Master(),
       routes: {
         loginPage: (context) => const LoginView(),
         registerPage: (context) => const RegisterView(),
@@ -48,15 +48,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class Master extends StatelessWidget {
+  const Master({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('HomePage'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('HomePage'),
+      // ),
       body: FutureBuilder(
         future: Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
@@ -67,6 +67,7 @@ class HomePage extends StatelessWidget {
               final user  = FirebaseAuth.instance.currentUser;
               dev.log(user.toString());
               if (user?.emailVerified == true) {
+
                 return const LandingPage();
               } else if (user?.emailVerified == false) {
                 dev.log(user.toString());
@@ -79,7 +80,9 @@ class HomePage extends StatelessWidget {
                 return const LoginView();
               }
             default:
-              return const CircularProgressIndicator();
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
           }
         },
       ),

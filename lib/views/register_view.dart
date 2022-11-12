@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:learningdart/constants/routes.dart';
+import 'package:learningdart/utilities/showErrorDialog.dart';
 import '../firebase_options.dart';
 import 'dart:developer' as dev show log;
 
@@ -37,6 +39,7 @@ class _RegisterViewState extends State<RegisterView> {
         appBar: AppBar(
           title: const Text('Create an Account!'),
           centerTitle: true,
+          
         ),
         body: FutureBuilder(
           future: Firebase.initializeApp(
@@ -100,7 +103,7 @@ class _RegisterViewState extends State<RegisterView> {
                       child: TextField(
                         controller: _password,
                         decoration: const InputDecoration(
-                          hintText: 'Password max 9 characters',
+                          hintText: 'Password max 15 characters',
                           enabledBorder: OutlineInputBorder(
                             borderSide:
                                 BorderSide(color: Colors.grey, width: 0.0),
@@ -116,7 +119,7 @@ class _RegisterViewState extends State<RegisterView> {
                         autocorrect: false,
                         textInputAction: TextInputAction.done,
                         textAlign: TextAlign.center,
-                        maxLength: 9,
+                        maxLength: 15,
                       ),
                     ),
 
@@ -138,24 +141,39 @@ class _RegisterViewState extends State<RegisterView> {
                           await FirebaseAuth.instance
                               .createUserWithEmailAndPassword(
                                   email: email, password: password);
+
+                          final user = await FirebaseAuth.instance.currentUser;
+                          await user?.reload();
+
+                          if (user?.emailVerified == false) {
+                            Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailPage, (route) => false);
+                          }
+
+                           await user?.sendEmailVerification();
+                           Fluttertoast.showToast(msg: "Verification link Sent!");
+
                         } on FirebaseAuthException catch (e) {
+
+                          final user = FirebaseAuth.instance.currentUser;
+
                           if (e.code == 'email-already-in-use') {
                             try {
-                              const Text('Emali Already in Use.');
+                              Fluttertoast.showToast(msg: "Logging in..");
                               FirebaseAuth.instance.signInWithEmailAndPassword(
                                   email: email, password: password);
+                              Navigator.of(context).pushNamedAndRemoveUntil(homePage, (route) => false);
                             } on FirebaseAuthException catch (t) {
                               dev.log(e.code);
                               if (t.code == 'wrong-password') {
-                                const Text('data');
+                                showErrorDialog(context, "Wrong Password.");
                               }
                             }
                           } else if (e.code == 'weak-password') {
-                            dev.log('Weak password');
+                            showErrorDialog(context, "Weak Password");
                           } else if (e.code == 'invalid-email') {
-                            dev.log('Invalid Email ');
-                          } else if (e.code == 'wrong-password') {
-                            dev.log('Wrong');
+                            showErrorDialog(context, "Weak Password.");
+                          } else if (user?.emailVerified == false) {
+                            Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailPage, (route) => false);
                           }
                         }
                       },
