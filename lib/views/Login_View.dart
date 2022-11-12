@@ -3,7 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:learningdart/constants/routes.dart';
 import '../firebase_options.dart';
-import 'dart:developer' as dev show log;
+
+
+import '../utilities/showErrorDialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -135,29 +137,45 @@ class _LoginViewState extends State<LoginView> {
                             final password = _password.text;
 
                             try {
-                              Navigator.of(context).pushNamedAndRemoveUntil(homePage, (route) => false);
-                              FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+                              await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+
+                              final user = FirebaseAuth.instance.currentUser;
+
+                              if (user?.emailVerified == true) {
+                                Navigator.of(context).pushNamedAndRemoveUntil(homePage, (route) => false);
+                              } else if (user?.emailVerified == false) {
+                                Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailPage, (route) => false);
+                              }
                               // Future<UserCredential> userCredential;
-                              // FutureBuilder(
-                              //   future:
-                              //   builder: (BuildContext context,snapshot) {
-                              //     switch (snapshot.connectionState) {
-                              //       case ConnectionState.active:
-                              //         return const CircularProgressIndicator();
-                              //       // case ConnectionState.done:
-                              //       //   return
-                              //       default:
-                              //         return const CircularProgressIndicator();
-                              //     }
-                              //   }
-                              //   ,
-                              // );
-
-
+                                  // FutureBuilder(
+                                  //   future:
+                                  //   builder: (BuildContext context,snapshot) {
+                                  //     switch (snapshot.connectionState) {
+                                  //       case ConnectionState.active:
+                                  //         return const CircularProgressIndicator();
+                                  //       // case ConnectionState.done:
+                                  //       //   return
+                                  //       default:
+                                  //         return const CircularProgressIndicator();
+                                  //     }
+                                  //   }
+                                  //   ,
+                                  // );
                             } on FirebaseAuthException catch (e) {
-                              dev.log(e.code);
-                            } catch (f) {
-                              dev.log(f.toString());
+
+                              switch (e.code) {
+                                case 'wrong-password':
+                                  await showErrorDialog(context, "Wrong Password");
+                                  break;
+                                case 'user-not-found':
+                                  await showErrorDialog(context, "Unknown Username");
+                                  break;
+                                default:
+                                  await showErrorDialog(context, e.code);
+
+                              }
+                            } catch (e) {
+                              await showErrorDialog(context, e.toString());
                             }
 
 
@@ -189,7 +207,19 @@ class _LoginViewState extends State<LoginView> {
 
     );
   }
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

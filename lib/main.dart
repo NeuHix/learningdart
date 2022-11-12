@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
         loginPage: (context) => const LoginView(),
         registerPage: (context) => const RegisterView(),
         homePage: (context) => const LandingPage(),
+        verifyEmailPage : (context) => const VerifyEmailView(),
       },
       debugShowCheckedModeBanner: false,
     );
