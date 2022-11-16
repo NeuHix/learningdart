@@ -17,6 +17,7 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
+
   // late final TextEditingController _user_name;
 
   @override
@@ -39,7 +40,6 @@ class _RegisterViewState extends State<RegisterView> {
         appBar: AppBar(
           title: const Text('Create an Account!'),
           centerTitle: true,
-          
         ),
         body: FutureBuilder(
           future: Firebase.initializeApp(
@@ -142,18 +142,17 @@ class _RegisterViewState extends State<RegisterView> {
                               .createUserWithEmailAndPassword(
                                   email: email, password: password);
 
-                          final user = await FirebaseAuth.instance.currentUser;
-                          await user?.reload();
+                          var user = FirebaseAuth.instance.currentUser;
+
+                          await user?.sendEmailVerification();
+                          Fluttertoast.showToast(
+                              msg: "Verification link Sent!");
 
                           if (user?.emailVerified == false) {
-                            Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailPage, (route) => false);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                verifyEmailPage, (route) => false);
                           }
-
-                           await user?.sendEmailVerification();
-                           Fluttertoast.showToast(msg: "Verification link Sent!");
-
                         } on FirebaseAuthException catch (e) {
-
                           final user = FirebaseAuth.instance.currentUser;
 
                           if (e.code == 'email-already-in-use') {
@@ -161,7 +160,8 @@ class _RegisterViewState extends State<RegisterView> {
                               Fluttertoast.showToast(msg: "Logging in..");
                               FirebaseAuth.instance.signInWithEmailAndPassword(
                                   email: email, password: password);
-                              Navigator.of(context).pushNamedAndRemoveUntil(homePage, (route) => false);
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                  homePage, (route) => false);
                             } on FirebaseAuthException catch (t) {
                               dev.log(e.code);
                               if (t.code == 'wrong-password') {
@@ -173,7 +173,8 @@ class _RegisterViewState extends State<RegisterView> {
                           } else if (e.code == 'invalid-email') {
                             showErrorDialog(context, "Weak Password.");
                           } else if (user?.emailVerified == false) {
-                            Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailPage, (route) => false);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                verifyEmailPage, (route) => false);
                           }
                         }
                       },

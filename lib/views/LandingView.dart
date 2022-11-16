@@ -1,13 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'dart:developer' as dev show log;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:learningdart/constants/routes.dart';
 
 enum Actions {
   logout,
-
 }
 
 class LandingPage extends StatefulWidget {
@@ -24,7 +22,8 @@ class _LandingPageState extends State<LandingPage> {
       appBar: AppBar(
         title: const Text("Your Notes"),
         actions: [
-          PopupMenuButton(onSelected: (value) async {
+          PopupMenuButton(
+            onSelected: (value) async {
               switch (value) {
                 case Actions.logout:
                   dev.log("No I wouldn't.");
@@ -33,8 +32,9 @@ class _LandingPageState extends State<LandingPage> {
                     await FirebaseAuth.instance.signOut();
 
                     Navigator.of(context).pushNamedAndRemoveUntil(
-                        loginPage,
-                          (route) => false,);
+                      loginPage,
+                      (route) => false,
+                    );
                   } else {
                     Fluttertoast.showToast(
                         msg: "Never do that Again!",
@@ -42,21 +42,23 @@ class _LandingPageState extends State<LandingPage> {
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 1,
                         textColor: Colors.white,
-                        fontSize: 16.0
-                    );
+                        fontSize: 16.0);
                   }
                   break;
               }
-          },itemBuilder: (context) {
-            return const [
-              PopupMenuItem<Actions>(value:
-              Actions.logout,
-                child: Text("Log Out"),)
-            ];
-          },)
+            },
+            itemBuilder: (context) {
+              return const [
+                PopupMenuItem<Actions>(
+                  value: Actions.logout,
+                  child: Text("Log Out"),
+                )
+              ];
+            },
+          )
         ],
       ),
-        body: const Text("Wait a minute minut"),
+      body: const Text("Wait a minute minut"),
     );
   }
 }
@@ -66,18 +68,24 @@ Future<bool> showLogOutDialog(BuildContext context) {
     context: context,
     builder: (context) {
       return AlertDialog(
-          title: const Text('Sign out'),
-          content: const Text('Are you sure you want to sign out?'),
-          actions: [
-            TextButton(onPressed: () {
-              Navigator.of(context).pop(true); /// Navigator is used to only focus on the dialog for the moment and
-              /// nothing else
-            }, child: const Text("Yes, Log Out.")),
-            TextButton(onPressed: () {
-              Navigator.of(context).pop(false);
-            }, child: const Text("No, Stay.")),
-    ],
-  );
-},
-).then((value) => value ?? false);
+        title: const Text('Sign out'),
+        content: const Text('Are you sure you want to sign out?'),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+
+                /// Navigator is used to only focus on the dialog for the moment and
+                /// nothing else
+              },
+              child: const Text("Yes, Log Out.")),
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text("No, Stay.")),
+        ],
+      );
+    },
+  ).then((value) => value ?? false);
 }

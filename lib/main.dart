@@ -15,10 +15,7 @@ import 'dart:developer' as dev show log;
 /// StatelessWidget aren't gonna be changed during
 /// user interaction like icon, buttons, text.
 
-enum Actions {
-  logout
-
-}
+enum Actions { logout }
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,20 +25,20 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.red,),
+        primarySwatch: Colors.red,
+      ),
       home: const Master(),
       routes: {
         loginPage: (context) => const LoginView(),
         registerPage: (context) => const RegisterView(),
         homePage: (context) => const LandingPage(),
-        verifyEmailPage : (context) => const VerifyEmailView(),
+        verifyEmailPage: (context) => const VerifyEmailView(),
       },
       debugShowCheckedModeBanner: false,
     );
@@ -64,10 +61,9 @@ class Master extends StatelessWidget {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              final user  = FirebaseAuth.instance.currentUser;
+              final user = FirebaseAuth.instance.currentUser;
               dev.log(user.toString());
               if (user?.emailVerified == true) {
-
                 return const LandingPage();
               } else if (user?.emailVerified == false) {
                 dev.log(user.toString());
@@ -87,14 +83,5 @@ class Master extends StatelessWidget {
         },
       ),
     );
-
   }
 }
-
-
-
-
-
-
-
-
