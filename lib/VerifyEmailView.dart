@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as dev show log;
 import 'package:learningdart/constants/routes.dart';
+import 'package:learningdart/services/auth/auth_service.dart';
 
 var status = "Not Verified";
 void changeStatusToVerified() {
@@ -41,8 +41,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
             ),
             ElevatedButton(
               onPressed: () async {
-                final user = FirebaseAuth.instance.currentUser;
-                await user?.sendEmailVerification();
+                await AuthService.firebase().sendEmailVerification();
               },
               child: const Text("Send Link Again."),
             ),
@@ -53,14 +52,14 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
             Text("Status: $status"),
             ElevatedButton(
                 onPressed: () async {
-                  final user = await FirebaseAuth.instance.currentUser;
+                  final user = AuthService.firebase().currentUser;
                   await user?.reload();
                   dev.log(user.toString());
-                  if (user?.emailVerified == true) {
+                  if (user?.isEmailVerified == true) {
                     changeStatusToVerified();
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil(homePage, (route) => false);
-                  } else if (user?.emailVerified == false) {
+                  } else if (user?.isEmailVerified == false) {
                     changeStatusToNotVerified();
                   }
                 },

@@ -1,8 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:learningdart/constants/routes.dart';
-import '../firebase_options.dart';
+import 'package:learningdart/services/auth/auth_exception.dart';
+import 'package:learningdart/services/auth/auth_service.dart';
 import '../utilities/showErrorDialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -49,8 +48,7 @@ class _LoginViewState extends State<LoginView> {
           backgroundColor: Colors.blue,
         ),
         body: FutureBuilder(
-          future: Firebase.initializeApp(
-              options: DefaultFirebaseOptions.currentPlatform),
+          future: AuthService.firebase().initialize(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
@@ -121,42 +119,31 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        await Firebase.initializeApp(
-                          options: DefaultFirebaseOptions.currentPlatform,
-                        );
+                        await AuthService.firebase().initialize();
                         final email = _email.text;
                         final password = _password.text;
 
                         try {
-                          await FirebaseAuth.instance
-                              .signInWithEmailAndPassword(
-                            email: email,
-                            password: password,
-                          );
+                          await AuthService.firebase()
+                              .logIn(email: email, password: password);
 
-                          final user = FirebaseAuth.instance.currentUser;
-                          user?.reload();
-                          if (user?.emailVerified == true) {
+                          final user = AuthService.firebase().currentUser;
+                          user?.reload;
+                          if (user?.isEmailVerified == true) {
+                            if (!mounted) {}
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 homePage, (route) => false);
-                          } else if (user?.emailVerified == false) {
+                          } else if (user?.isEmailVerified == false) {
+                            if (!mounted) {}
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 verifyEmailPage, (route) => false);
                           }
-                        } on FirebaseAuthException catch (e) {
-                          switch (e.code) {
-                            case 'wrong-password':
-                              await showErrorDialog(context, "Wrong Password");
-                              break;
-                            case 'user-not-found':
-                              await showErrorDialog(
-                                  context, "Unknown Username");
-                              break;
-                            default:
-                              await showErrorDialog(context, e.code);
-                          }
-                        } catch (e) {
-                          await showErrorDialog(context, e.toString());
+                        } on WrongPasswordAuthException {
+                          if (!mounted) {}
+                          showErrorDialog(context, "Wrong Password");
+                        } on UserNotFoundAuthException {
+                          if (!mounted) {}
+                          showErrorDialog(context, "User not found");
                         }
                       },
                       style: ButtonStyle(
@@ -183,5 +170,3 @@ class _LoginViewState extends State<LoginView> {
         ));
   }
 }
-
-void afterLoginOperation() {}

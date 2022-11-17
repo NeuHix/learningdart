@@ -1,2 +1,3 @@
-2022/10/30-02:40:11.717 c745 Creating DB /tmp/flutter_tools.JDDLIK/flutter_tools_chrome_device.MXADBW/Default/shared_proto_db/metadata since it was missing.
-2022/10/30-02:40:11.717 c745 Reusing MANIFEST /tmp/flutter_tools.JDDLIK/flutter_tools_chrome_device.MXADBW/Default/shared_proto_db/metadata/MANIFEST-000001
+2022/10/31-08:20:51.658 65a2 Reusing MANIFEST /tmp/flutter_tools.YSWNQQ/flutter_tools_chrome_device.BOESMN/Default/shared_proto_db/metadata/MANIFEST-000001
+2022/10/31-08:20:51.658 65a2 Recovering log #3
+2022/10/31-08:20:51.659 65a2 Reusing old log /tmp/flutter_tools.YSWNQQ/flutter_tools_chrome_device.BOESMN/Default/shared_proto_db/metadata/000003.log 

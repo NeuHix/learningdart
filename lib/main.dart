@@ -1,21 +1,19 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:learningdart/firebase_options.dart';
+import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:learningdart/views/LandingView.dart';
 import 'VerifyEmailView.dart';
-import 'views/Login_View.dart';
-import 'views/register_view.dart';
-import 'constants/routes.dart';
+import 'package:learningdart/views/Login_View.dart';
+import 'package:learningdart/views/register_view.dart';
+import 'package:learningdart/constants/routes.dart';
 import 'dart:developer' as dev show log;
 
-/// StatefulWidget are things that gonna be changed
-/// during user interaction like the counter in here, changing texts etc.
-///
-/// StatelessWidget aren't gonna be changed during
-/// user interaction like icon, buttons, text.
-
-enum Actions { logout }
+/*
+StatefulWidget are things that gonna be changed
+during user interaction like the counter in here, changing texts etc.
+-->
+StatelessWidget aren't gonna be changed during
+user interaction like icon, buttons, text.
+ */
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,17 +53,15 @@ class Master extends StatelessWidget {
       //   title: const Text('HomePage'),
       // ),
       body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
+        future: AuthService.firebase().initialize(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              final user = FirebaseAuth.instance.currentUser;
+              final user = AuthService.firebase().currentUser;
               dev.log(user.toString());
-              if (user?.emailVerified == true) {
+              if (user?.isEmailVerified == true) {
                 return const LandingPage();
-              } else if (user?.emailVerified == false) {
+              } else if (user?.isEmailVerified == false) {
                 dev.log(user.toString());
                 return const VerifyEmailView();
               } else if (user?.isAnonymous == true || user == null) {

@@ -1,9 +1,12 @@
 import 'dart:developer' as dev show log;
+import 'package:firebase_core/firebase_core.dart';
 import 'package:learningdart/services/auth/auth_user.dart';
 import 'package:learningdart/services/auth/auth_exception.dart';
 import 'package:learningdart/services/auth/auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     show FirebaseAuth, FirebaseAuthException;
+
+import '../../firebase_options.dart';
 
 class Authenticate implements AuthProvider {
   @override
@@ -38,8 +41,8 @@ class Authenticate implements AuthProvider {
   }
 
   @override
-  AuthUser? get currentUser {
-    final user = FirebaseAuth.instance.currentUser;
+  AuthUser? get currentUser  {
+    final user =  FirebaseAuth.instance.currentUser;
     if (user != null) {
       return AuthUser.fromFirebase(user);
     } else {
@@ -48,8 +51,10 @@ class Authenticate implements AuthProvider {
   }
 
   @override
-  Future<AuthUser?> logIn(
-      {required String email, required String password}) async {
+  Future<AuthUser?> logIn({
+    required String email,
+    required String password,
+  }) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
@@ -68,12 +73,11 @@ class Authenticate implements AuthProvider {
       } else if (e.code == 'user-not-found') {
         throw UserNotLoggedInAuthException();
       } else {
-          throw GenericAuthException();
+        throw GenericAuthException();
       }
     } catch (e) {
       throw GenericAuthException();
     }
-
   }
 
   @override
@@ -99,4 +103,24 @@ class Authenticate implements AuthProvider {
       throw UserNotLoggedInAuthException();
     }
   }
+
+  @override
+  Future<void> initialize() async {
+    Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+

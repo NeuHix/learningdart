@@ -1,10 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:learningdart/constants/routes.dart';
+import 'package:learningdart/services/auth/auth_exception.dart';
+import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:learningdart/utilities/showErrorDialog.dart';
-import '../firebase_options.dart';
 import 'dart:developer' as dev show log;
 
 class RegisterView extends StatefulWidget {
@@ -42,8 +41,7 @@ class _RegisterViewState extends State<RegisterView> {
           centerTitle: true,
         ),
         body: FutureBuilder(
-          future: Firebase.initializeApp(
-              options: DefaultFirebaseOptions.currentPlatform),
+          future: AuthService.firebase().initialize(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
@@ -97,6 +95,7 @@ class _RegisterViewState extends State<RegisterView> {
                       width: 400,
                       height: 20,
                     ),
+
                     SizedBox(
                       width: 300,
                       height: 80,
@@ -130,52 +129,52 @@ class _RegisterViewState extends State<RegisterView> {
 
                     ElevatedButton(
                       onPressed: () async {
-                        await Firebase.initializeApp(
-                          options: DefaultFirebaseOptions.currentPlatform,
-                        );
+                        AuthService.firebase().currentUser;
                         final email = _email.text;
                         final password = _password.text;
                         // final username = _user_name;
 
                         try {
-                          await FirebaseAuth.instance
-                              .createUserWithEmailAndPassword(
-                                  email: email, password: password);
-
-                          var user = FirebaseAuth.instance.currentUser;
-
-                          await user?.sendEmailVerification();
+                          await AuthService.firebase().createUser(
+                            email: email,
+                            password: password,
+                          );
+                          final user = AuthService.firebase().currentUser;
+                          await AuthService.firebase().sendEmailVerification();
                           Fluttertoast.showToast(
                               msg: "Verification link Sent!");
 
-                          if (user?.emailVerified == false) {
+                          if (user?.isEmailVerified == false) {
+                            if (!mounted) {}
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 verifyEmailPage, (route) => false);
                           }
-                        } on FirebaseAuthException catch (e) {
-                          final user = FirebaseAuth.instance.currentUser;
+                        } on WeakPasswordAuthException {
+                          await showErrorDialog(context, "Weak Password");
+                        } on InvalidEmailAuthException {
+                          await showErrorDialog(context, "Invalid Email");
+                        } on EmailAlreadyInUseAuthException {
+                          try {
+                            Fluttertoast.showToast(msg: "Logging in..");
+                            AuthService.firebase().logIn(
+                              email: email,
+                              password: password,
+                            );
 
-                          if (e.code == 'email-already-in-use') {
-                            try {
-                              Fluttertoast.showToast(msg: "Logging in..");
-                              FirebaseAuth.instance.signInWithEmailAndPassword(
-                                  email: email, password: password);
+                            final user = AuthService.firebase().currentUser;
+                            if (user?.isEmailVerified == true) {
                               Navigator.of(context).pushNamedAndRemoveUntil(
                                   homePage, (route) => false);
-                            } on FirebaseAuthException catch (t) {
-                              dev.log(e.code);
-                              if (t.code == 'wrong-password') {
-                                showErrorDialog(context, "Wrong Password.");
-                              }
+                            } else {
+                              await showErrorDialog(
+                                  context, "Something Went Wrong");
                             }
-                          } else if (e.code == 'weak-password') {
-                            showErrorDialog(context, "Weak Password");
-                          } else if (e.code == 'invalid-email') {
-                            showErrorDialog(context, "Weak Password.");
-                          } else if (user?.emailVerified == false) {
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                                verifyEmailPage, (route) => false);
+                          } on WrongPasswordAuthException {
+                            dev.log("Wrong Password");
+                            showErrorDialog(context, "Wrong Password.");
                           }
+                        } on GenericAuthException catch (e) {
+                          await showErrorDialog(context, "${e.toString}");
                         }
                       },
                       child: const Text('Register as a New User'),

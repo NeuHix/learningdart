@@ -1,12 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as dev show log;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:learningdart/constants/routes.dart';
-
-enum Actions {
-  logout,
-}
+import 'package:learningdart/enums/menu_actions.dart';
+import 'package:learningdart/services/auth/auth_service.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -25,12 +22,13 @@ class _LandingPageState extends State<LandingPage> {
           PopupMenuButton(
             onSelected: (value) async {
               switch (value) {
-                case Actions.logout:
+                case MenuActions.logout:
                   dev.log("No I wouldn't.");
                   final shouldLogout = await showLogOutDialog(context);
                   if (shouldLogout) {
-                    await FirebaseAuth.instance.signOut();
-
+                    await AuthService.firebase().logOut();
+                    Fluttertoast.showToast(msg: "Cool! Now Login Again.");
+                    if (!mounted) {}
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       loginPage,
                       (route) => false,
@@ -49,8 +47,8 @@ class _LandingPageState extends State<LandingPage> {
             },
             itemBuilder: (context) {
               return const [
-                PopupMenuItem<Actions>(
-                  value: Actions.logout,
+                PopupMenuItem<MenuActions>(
+                  value: MenuActions.logout,
                   child: Text("Log Out"),
                 )
               ];
@@ -58,7 +56,7 @@ class _LandingPageState extends State<LandingPage> {
           )
         ],
       ),
-      body: const Text("Wait a minute minut"),
+      body: const Text("Wait a minute"),
     );
   }
 }
