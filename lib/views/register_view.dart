@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:learningdart/constants/routes.dart';
 import 'package:learningdart/services/auth/auth_exception.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
@@ -129,52 +130,62 @@ class _RegisterViewState extends State<RegisterView> {
 
                     ElevatedButton(
                       onPressed: () async {
-                        AuthService.firebase().currentUser;
-                        final email = _email.text;
-                        final password = _password.text;
-                        // final username = _user_name;
+                        bool result =
+                            await InternetConnectionChecker().hasConnection;
+                        if (result) {
+                          await AuthService.firebase().currentUser;
+                          final email = _email.text;
+                          final password = _password.text;
+                          // final username = _user_name;
 
-                        try {
-                          await AuthService.firebase().createUser(
-                            email: email,
-                            password: password,
-                          );
-                          final user = AuthService.firebase().currentUser;
-                          await AuthService.firebase().sendEmailVerification();
-                          Fluttertoast.showToast(
-                              msg: "Verification link Sent!");
-
-                          if (user?.isEmailVerified == false) {
-                            if (!mounted) {}
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                                verifyEmailPage, (route) => false);
-                          }
-                        } on WeakPasswordAuthException {
-                          await showErrorDialog(context, "Weak Password");
-                        } on InvalidEmailAuthException {
-                          await showErrorDialog(context, "Invalid Email");
-                        } on EmailAlreadyInUseAuthException {
                           try {
-                            Fluttertoast.showToast(msg: "Logging in..");
-                            AuthService.firebase().logIn(
+                            await AuthService.firebase().createUser(
                               email: email,
                               password: password,
                             );
-
                             final user = AuthService.firebase().currentUser;
-                            if (user?.isEmailVerified == true) {
+                            user?.reload();
+
+                            if (user != null) {
+                              await AuthService.firebase()
+                                  .sendEmailVerification();
+                              Fluttertoast.showToast(
+                                  msg: "Verification link Sent!");
                               Navigator.of(context).pushNamedAndRemoveUntil(
-                                  homePage, (route) => false);
-                            } else {
-                              await showErrorDialog(
-                                  context, "Something Went Wrong");
+                                  verifyEmailPage, (route) => false);
+                            } else if (user == null) {
+                              await showErrorDialog(context, "Something went wrong!");
                             }
-                          } on WrongPasswordAuthException {
-                            dev.log("Wrong Password");
-                            showErrorDialog(context, "Wrong Password.");
+                          } on WeakPasswordAuthException {
+                            await showErrorDialog(context, "Weak Password");
+                          } on InvalidEmailAuthException {
+                            await showErrorDialog(context, "Invalid Email");
+                          } on EmailAlreadyInUseAuthException {
+                            try {
+                              Fluttertoast.showToast(msg: "Logging in..");
+                              AuthService.firebase().logIn(
+                                email: email,
+                                password: password,
+                              );
+
+                              final user = AuthService.firebase().currentUser;
+                              if (user?.isEmailVerified == true) {
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    homePage, (route) => false);
+                              } else {
+                                await showErrorDialog(
+                                    context, "Something Went Wrong");
+                              }
+                            } on WrongPasswordAuthException {
+                              dev.log("Wrong Password");
+                              showErrorDialog(context, "Wrong Password.");
+                            }
+                          } on GenericAuthException catch (e) {
+                            await showErrorDialog(context, "${e.toString}");
                           }
-                        } on GenericAuthException catch (e) {
-                          await showErrorDialog(context, "${e.toString}");
+                        } else {
+                          if (!mounted) {}
+                          showErrorDialog(context, "No Internet Connection");
                         }
                       },
                       child: const Text('Register as a New User'),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:learningdart/constants/routes.dart';
 import 'package:learningdart/services/auth/auth_exception.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
@@ -20,6 +21,8 @@ class LoginView extends StatefulWidget {
     );
   }
 }
+
+
 
 class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
@@ -119,31 +122,41 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        await AuthService.firebase().initialize();
-                        final email = _email.text;
-                        final password = _password.text;
+                        bool result = await InternetConnectionChecker()
+                            .hasConnection;
+                        if (result) {
+                          await AuthService.firebase().initialize();
+                          final email = _email.text;
+                          final password = _password.text;
 
-                        try {
-                          await AuthService.firebase()
-                              .logIn(email: email, password: password);
+                          try {
+                            await AuthService.firebase()
+                                .logIn(email: email, password: password);
 
-                          final user = AuthService.firebase().currentUser;
-                          user?.reload;
-                          if (user?.isEmailVerified == true) {
+                            final user = AuthService
+                                .firebase()
+                                .currentUser;
+                            user?.reload;
+                            if (user?.isEmailVerified == true) {
+                              if (!mounted) {}
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                  homePage, (route) => false);
+                            } else if (user?.isEmailVerified == false) {
+                              if (!mounted) {}
+                              AuthService.firebase().sendEmailVerification();
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                  verifyEmailPage, (route) => false);
+                            }
+                          } on WrongPasswordAuthException {
                             if (!mounted) {}
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                                homePage, (route) => false);
-                          } else if (user?.isEmailVerified == false) {
+                            showErrorDialog(context, "Wrong Password");
+                          } on UserNotFoundAuthException {
                             if (!mounted) {}
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                                verifyEmailPage, (route) => false);
+                            showErrorDialog(context, "User not found");
                           }
-                        } on WrongPasswordAuthException {
+                        } else {
                           if (!mounted) {}
-                          showErrorDialog(context, "Wrong Password");
-                        } on UserNotFoundAuthException {
-                          if (!mounted) {}
-                          showErrorDialog(context, "User not found");
+                          showErrorDialog(context, "No Internet Connection");
                         }
                       },
                       style: ButtonStyle(
@@ -167,6 +180,7 @@ class _LoginViewState extends State<LoginView> {
                 return const CircularProgressIndicator();
             }
           },
-        ));
+        )
+    );
   }
 }

@@ -64,7 +64,7 @@ class Master extends StatelessWidget {
               } else if (user?.isEmailVerified == false) {
                 dev.log(user.toString());
                 return const VerifyEmailView();
-              } else if (user?.isAnonymous == true || user == null) {
+              } else if (user?.isAnonymous == null) {
                 dev.log(user.toString());
                 return const RegisterView();
               } else {

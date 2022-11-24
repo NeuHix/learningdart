@@ -10,13 +10,13 @@ class AuthUser {
     await FirebaseAuth.instance.currentUser?.reload();
   }
 
-  const AuthUser(
-    this.isEmailVerified,
-    this.isAnonymous,
-  );
+  const AuthUser({
+    required this.isEmailVerified,
+    required this.isAnonymous,
+  });
 
   factory AuthUser.fromFirebase(User user) => AuthUser(
-        user.emailVerified,
-        user.isAnonymous,
+        isEmailVerified: user.emailVerified,
+        isAnonymous: user.isAnonymous,
       );
 }

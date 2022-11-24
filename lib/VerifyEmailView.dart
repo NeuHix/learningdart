@@ -8,6 +8,9 @@ void changeStatusToVerified() {
   status = "Verified";
 }
 
+/// changes status to verified based on status
+///
+/// your are the boos
 void changeStatusToNotVerified() {
   status = "Not Verified";
 }

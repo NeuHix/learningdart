@@ -1,4 +1,4 @@
-#Fri Nov 11 19:38:35 IST 2022
+#Fri Nov 18 01:29:23 IST 2022
 base.0=/home/arctrus/learningdart/build/app/intermediates/dex/release/minifyReleaseWithR8/classes.dex
 renamed.0=classes.dex
 path.0=classes.dex

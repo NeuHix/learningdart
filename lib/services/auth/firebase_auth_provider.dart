@@ -14,35 +14,16 @@ class Authenticate implements AuthProvider {
     required String email,
     required String password,
   }) async {
-    try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
-        password: password,
-      );
-      final user = currentUser;
-      if (user != null) {
-        return user;
-      } else {
-        throw UserNotLoggedInAuthException();
-      }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        throw WeakPasswordAuthException();
-      } else if (e.code == 'email-already-in-use') {
-        throw EmailAlreadyInUseAuthException();
-      } else if (e.code == 'invalid-amil') {
-        throw InvalidEmailAuthException();
-      } else {
-        throw GenericAuthException();
-      }
-    } catch (_) {
-      throw GenericAuthException();
-    }
+        password: password,);
+      return currentUser;
   }
 
   @override
   AuthUser? get currentUser  {
     final user =  FirebaseAuth.instance.currentUser;
+    user?.reload();
     if (user != null) {
       return AuthUser.fromFirebase(user);
     } else {
@@ -106,9 +87,10 @@ class Authenticate implements AuthProvider {
 
   @override
   Future<void> initialize() async {
-    Firebase.initializeApp(
+    await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
   }
 
 
