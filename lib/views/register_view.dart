@@ -1,13 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:learningdart/constants/routes.dart';
 import 'package:learningdart/services/auth/auth_exception.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
-import 'package:learningdart/utilities/showDialogs.dart';
 import 'dart:developer' as dev show log;
-
 import 'package:simple_connection_checker/simple_connection_checker.dart';
+import '../utilities/child_dialogs.dart';
+import '../utilities/generic_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);

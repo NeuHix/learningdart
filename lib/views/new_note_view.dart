@@ -1,4 +1,4 @@
-// import 'package:auto_size_text_field/auto_size_text_field.dart';
+import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:learningdart/constants/routes.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
@@ -55,8 +55,8 @@ class _NewNoteViewState extends State<NewNoteView> {
   @override
   void initState() {
     _notesService = NotesService();
-    _textController = TextEditingController();
     super.initState();
+    _textController = TextEditingController();
   }
 
   void _textControllerListener() async {
@@ -94,7 +94,7 @@ class _NewNoteViewState extends State<NewNoteView> {
       appBar: AppBar(
         title: const Text("Write Here"),
         centerTitle: true,
-        backgroundColor: currentColor,
+      
       ),
       body: FutureBuilder(
         future: createNewNote(),
@@ -104,7 +104,17 @@ class _NewNoteViewState extends State<NewNoteView> {
               _note = snapshot.data as DatabaseNote;
               _setupTextControllerListener();
 
-              return const Text("Cool!");
+              return AutoSizeTextField(
+                controller: _textController,
+                style: const TextStyle(fontSize: 20),
+                semanticsLabel: "What's in your mind?",
+                autofocus: true,
+                maxLines: null,
+                decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.all(20)),
+              );
             default:
               return const Center(
                 child: CircularProgressIndicator(),
@@ -129,7 +139,7 @@ class _NewNoteViewState extends State<NewNoteView> {
           Icons.arrow_back_ios,
           color: Colors.black54,
         ),
-        backgroundColor: currentColor,
+      
       ),
     );
   }

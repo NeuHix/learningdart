@@ -4,7 +4,8 @@ import 'package:learningdart/constants/routes.dart';
 import 'package:learningdart/services/auth/auth_exception.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:simple_connection_checker/simple_connection_checker.dart';
-import '../utilities/showDialogs.dart';
+import '../utilities/child_dialogs.dart';
+import '../utilities/generic_dialog.dart';
 import 'dart:developer' as dev show log;
 
 class LoginView extends StatefulWidget {
@@ -39,7 +40,7 @@ class _LoginViewState extends State<LoginView> {
   void dispose() {
     _email.dispose();
     _password.dispose();
-    
+
     super.dispose();
   }
 
@@ -188,7 +189,6 @@ class _LoginViewState extends State<LoginView> {
                           //           NotesPage, (route) => false);
                           //     }
                           //   }
-
                         } else {
                           if (mounted) {
                             Navigator.of(context, rootNavigator: true).pop();

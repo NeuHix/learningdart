@@ -56,16 +56,9 @@ class MyApp extends StatelessWidget {
 class Master extends StatelessWidget {
   const Master({Key? key}) : super(key: key);
 
-  // Future<FirebaseApp> () {
-  //
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('HomePage'),
-      // ),
       body: FutureBuilder(
         future: AuthService.firebase().initialize(),
         builder: (context, snapshot) {

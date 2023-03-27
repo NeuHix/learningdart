@@ -1,14 +1,11 @@
-// import 'dart:js_util';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as dev show log;
-// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:learningdart/constants/routes.dart';
 import 'package:learningdart/enums/menu_actions.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:learningdart/services/crud/notes_service.dart';
-import '../utilities/showDialogs.dart';
+import '../utilities/child_dialogs.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
@@ -54,7 +51,7 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Your Notes, "),
+        title: const Text("Your Notes!"),
         actions: [
           /// "Plus" Icon to create a new note
           /// Moves to [NewNoteView] using Navigator.push and that
@@ -104,7 +101,6 @@ class _NotesViewState extends State<NotesView> {
             },
           )
         ],
-        backgroundColor: currentColor,
       ),
       body: FutureBuilder(
         future: NotesService().getOrCreateUser(email: userEmail),
@@ -130,16 +126,27 @@ class _NotesViewState extends State<NotesView> {
                                 softWrap: true,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              trailing: IconButton(
-                                icon: const Icon(
-                                  Icons.delete_rounded,
-                                  color: Colors.black45,
-                                ),
-                                tooltip: "delete?",
-                                onPressed: () async {
-                                  await _notesService.deleteNote(id: note.id);
-                                },
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.delete_rounded,
+                                      color: Colors.black45,
+                                    ),
+                                    tooltip: "delete?",
+                                    onPressed: () async {
+                                      await _notesService.deleteNote(
+                                          id: note.id);
+                                    },
+                                  ),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.edit),
+                                  )
+                                ],
                               ),
+                              leading: const Icon(Icons.note_add),
                             );
                           },
                         );
@@ -183,7 +190,6 @@ class _NotesViewState extends State<NotesView> {
           color: Colors.black54,
           size: 30,
         ),
-        backgroundColor: currentColor,
         extendedPadding: const EdgeInsets.all(25),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -193,19 +199,17 @@ class _NotesViewState extends State<NotesView> {
             icon: const Icon(Icons.home_outlined),
             label: "home",
             tooltip: "home",
-            activeIcon: Icon(
+            activeIcon: const Icon(
               Icons.home_filled,
-              color: selectedColor,
             ),
             backgroundColor: currentColor,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.settings_outlined),
+            icon: const Icon(Icons.settings_input_composite_outlined),
             label: "tweaks",
             tooltip: "tweaks",
-            activeIcon: Icon(
-              Icons.settings_sharp,
-              color: selectedColor,
+            activeIcon: const Icon(
+              Icons.settings_input_composite_rounded,
             ),
             backgroundColor: currentColor,
           ),

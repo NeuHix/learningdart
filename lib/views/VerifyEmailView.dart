@@ -66,10 +66,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                     changeStatusToNotVerified();
                   }
                 },
-                child: const Text("Refresh Status")
-            ),
+                child: const Text("Refresh Status")),
           ],
-        )
-      );
+        ));
   }
 }
