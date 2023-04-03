@@ -20,21 +20,28 @@ class _NotesViewState extends State<NotesView> {
 
   final _notesService = NotesService();
 
-  final currentColor = const Color(0xffc2e7ff);
-  final selectedColor = const Color(0xff9db1c7);
+  // final currentColor = const Color(0xffc2e7ff);
+  // final selectedColor = const Color(0xff9db1c7);
   int _selectedIndex = 0;
 
-  final userName = FirebaseAuth.instance.currentUser?.displayName;
+  
+  String getUserName() {
+    var userName = FirebaseAuth.instance.currentUser?.displayName;
+    
+    if (userName != null) {
+      return userName;
+    } else {
+      userName = "your Notes!";
+      return userName;
+    }
+  }
+  
   final cool = FirebaseAuth.instance.currentUser?.reload();
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-
-    // if (_selectedIndex == 1) {
-    //   Navigator.pushNamed(context, NewNotePage);
-    // }
   }
 
   @override
@@ -44,21 +51,20 @@ class _NotesViewState extends State<NotesView> {
     notesServices.dbExecuteNote();
     notesServices.ensureDBisOpen();
     super.initState();
-    dev.log("name: $userName");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Your Notes!"),
+        title: Text(getUserName()),
         actions: [
           /// "Plus" Icon to create a new note
           /// Moves to [NewNoteView] using Navigator.push and that
           /// adds a shortcut to return to [NotesView].
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, NewNotePage);
+              Navigator.pushNamed(context, WriteEditNotePage);
             },
             icon: const Icon(Icons.add),
           ),
@@ -136,8 +142,11 @@ class _NotesViewState extends State<NotesView> {
                                     ),
                                     tooltip: "delete?",
                                     onPressed: () async {
-                                      await _notesService.deleteNote(
-                                          id: note.id);
+                                      final shouldDelete = showDeleteDialog(context);
+                                      if (await shouldDelete) {
+                                        await _notesService.deleteNote(
+                                            id: note.id);
+                                      }
                                     },
                                   ),
                                   IconButton(
@@ -176,7 +185,7 @@ class _NotesViewState extends State<NotesView> {
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          Navigator.pushNamed(context, NewNotePage);
+          Navigator.pushNamed(context, WriteEditNotePage);
         },
         label: const Text(
           "Note",
@@ -193,25 +202,22 @@ class _NotesViewState extends State<NotesView> {
         extendedPadding: const EdgeInsets.all(25),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedIconTheme: IconThemeData(color: selectedColor),
-        items: [
+        items: const [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home_outlined),
+            icon: Icon(Icons.home_outlined),
             label: "home",
             tooltip: "home",
-            activeIcon: const Icon(
+            activeIcon: Icon(
               Icons.home_filled,
             ),
-            backgroundColor: currentColor,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.settings_input_composite_outlined),
+            icon: Icon(Icons.settings_input_composite_outlined),
             label: "tweaks",
             tooltip: "tweaks",
-            activeIcon: const Icon(
+            activeIcon: Icon(
               Icons.settings_input_composite_rounded,
             ),
-            backgroundColor: currentColor,
           ),
         ],
         onTap: _onItemTapped,

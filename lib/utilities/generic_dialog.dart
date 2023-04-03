@@ -41,7 +41,7 @@ Future<void> showProgressDialog(BuildContext context) {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text("Hide"),
+              child: const Text("hide"),
             )
           ],
           contentPadding:

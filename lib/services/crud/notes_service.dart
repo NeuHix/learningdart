@@ -143,12 +143,12 @@ class NotesService {
 
     var text = "";
     final noteId = await db.insert(noteTable,
-        {userIdColumn: owner.id, textColumn: text, isSyncedWithCloudColumn: 1});
+        {noteEmailColumn: owner.email, textColumn: text, isSyncedWithCloudColumn: 1});
     // putting note in the database
 
     final note = DatabaseNote(
       id: noteId,
-      user_id: owner.id,
+      email: owner.email,
       text: text,
       isSyncedWcloud: true,
     );
@@ -159,7 +159,7 @@ class NotesService {
 
   void dbExecuteNote() async {
     final db = _db;
-    await db?.execute(createNoteTableIfNotExists);
+    await db?.execute(createNoteTable);
   }
 
   Future<DatabaseUser> getUser({required String email}) async {
@@ -288,7 +288,7 @@ class NotesService {
       await _cacheNotes();
 
       /// Creating Note Table
-      await db.execute(createNoteTable);
+      await db.execute(createNoteTableIfNotExists);
       await _cacheNotes();
     } on MissingPlatformDirectoryException {
       throw UnableToFetchDocumentsDirectory();
@@ -333,20 +333,21 @@ class DatabaseUser {
 
 class DatabaseNote {
   final int id;
-  final int user_id;
+  final String email;
   final String text;
   final bool isSyncedWcloud;
+  
 
   DatabaseNote({
     required this.id,
-    required this.user_id,
+    required this.email,
     required this.text,
     required this.isSyncedWcloud,
   });
 
   DatabaseNote.fromRow(Map<String, Object?> uniqueIdentifier)
       : id = uniqueIdentifier[idColumn] as int,
-        user_id = uniqueIdentifier[userIdColumn] as int,
+        email = uniqueIdentifier[noteEmailColumn] as String,
         text = uniqueIdentifier[textColumn] as String,
         isSyncedWcloud = (uniqueIdentifier[isSyncedWithCloudColumn] as int) == 1
             ? true
@@ -354,7 +355,7 @@ class DatabaseNote {
 
   @override
   String toString() =>
-      "Note ID: $id \n User: $user_id \n isSyncedWithCloud: $isSyncedWcloud";
+      "Note ID: $id \n User: $email \n isSyncedWithCloud: $isSyncedWcloud";
 
   @override
   bool operator ==(covariant DatabaseNote other) => id == other.id;
@@ -368,7 +369,7 @@ const noteTable = 'notes';
 const userTable = 'user';
 const idColumn = 'id';
 const emailColumn = 'email';
-const userIdColumn = 'user_id';
+const noteEmailColumn = 'email';
 const textColumn = 'text';
 const isSyncedWithCloudColumn = 'is_synced_w_cloud';
 const createNoteTable = '''
@@ -376,21 +377,23 @@ const createNoteTable = '''
 	"id"	INTEGER NOT NULL,
 	"user_id"	INTEGER,
 	"text"	TEXT,
+	"email"	TEXT,
 	"is_synced_w_cloud"	INTEGER NOT NULL DEFAULT 0,
 	PRIMARY KEY("id" AUTOINCREMENT),
-	FOREIGN KEY("user_id") REFERENCES "user"("id")
+	FOREIGN KEY("email") REFERENCES "user"("id")
 );
 
-      ''';
+       ''';
 
 const createNoteTableIfNotExists = '''
     CREATE TABLE IF NOT EXISTS "notes" (
 	"id"	INTEGER NOT NULL,
 	"user_id"	INTEGER,
 	"text"	TEXT,
+	"email"	TEXT,
 	"is_synced_w_cloud"	INTEGER NOT NULL DEFAULT 0,
 	PRIMARY KEY("id" AUTOINCREMENT),
-	FOREIGN KEY("user_id") REFERENCES "user"("id")
+	FOREIGN KEY("email") REFERENCES "user"("id")
 );
 ''';
 const createUserTable = '''

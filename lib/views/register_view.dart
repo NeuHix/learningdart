@@ -179,7 +179,8 @@ class _RegisterViewState extends State<RegisterView> {
                           // final username = _user_name;
                           final name = _name.text;
                           try {
-                            await AuthService.firebase().createUser(
+                            await FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(
                               email: email,
                               password: password,
                             );
@@ -191,22 +192,26 @@ class _RegisterViewState extends State<RegisterView> {
                             if (user != null) {
                               await AuthService.firebase()
                                   .sendEmailVerification();
-                              Navigator.of(context, rootNavigator: true).pop();
-                              // Fluttertoast.showToast(
-                              //     msg: "Verification link Sent!");
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                  verifyEmailPage, (route) => false);
+                              if (mounted) {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    verifyEmailPage, (route) => false);
+                              }
                             } else if (user == null) {
-                              Navigator.of(context, rootNavigator: true).pop();
-                              await showErrorDialog(
-                                  context, "Something went wrong!");
+                              if (mounted) {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                                await showErrorDialog(
+                                    context, "Something went wrong!");
+                              }
                             }
-                          } on WeakPasswordAuthException {
-                            Navigator.of(context, rootNavigator: true).pop();
-                            await showErrorDialog(context, "Weak Password");
-                          } on InvalidEmailAuthException {
-                            Navigator.of(context, rootNavigator: true).pop();
-                            await showErrorDialog(context, "Invalid Email");
+                          } on FirebaseAuthException catch (exception) {
+                            if (mounted) {
+                              Navigator.of(context, rootNavigator: true).pop();
+                              await showErrorDialog(context, exception.code);
+                            }
                           } on EmailAlreadyInUseAuthException {
                             try {
                               // Fluttertoast.showToast(msg: "Logging in..");
@@ -233,8 +238,9 @@ class _RegisterViewState extends State<RegisterView> {
                             await showErrorDialog(context, "${e.toString}");
                           }
                         } else {
-                          if (!mounted) {}
-                          showErrorDialog(context, "No Internet Connection");
+                          if (mounted) {
+                            showErrorDialog(context, "No Internet Connection");
+                          }
                         }
                       },
                       child: const Text('Register as a New User'),
@@ -256,6 +262,7 @@ class _RegisterViewState extends State<RegisterView> {
                 return const CircularProgressIndicator();
             }
           },
-        ));
+        )
+    );
   }
 }

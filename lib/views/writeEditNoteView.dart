@@ -1,19 +1,18 @@
-import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:learningdart/constants/routes.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:learningdart/services/crud/notes_service.dart';
 
-class NewNoteView extends StatefulWidget {
-  const NewNoteView({Key? key}) : super(key: key);
+class WriteEditNoteView extends StatefulWidget {
+  const WriteEditNoteView({Key? key}) : super(key: key);
 
   @override
-  State<NewNoteView> createState() => _NewNoteViewState();
+  State<WriteEditNoteView> createState() => _WriteEditNoteViewState();
 }
 
-class _NewNoteViewState extends State<NewNoteView> {
+class _WriteEditNoteViewState extends State<WriteEditNoteView> {
   DatabaseNote? _note;
-  final currentColor = const Color(0xffc2e7ff);
+  // final floatingButtonColor = const Color(0xffc2e7ff);
   // DatabaseNote? tempNote;
   late final NotesService _notesService;
   late final TextEditingController _textController;
@@ -94,7 +93,6 @@ class _NewNoteViewState extends State<NewNoteView> {
       appBar: AppBar(
         title: const Text("Write Here"),
         centerTitle: true,
-      
       ),
       body: FutureBuilder(
         future: createNewNote(),
@@ -104,10 +102,9 @@ class _NewNoteViewState extends State<NewNoteView> {
               _note = snapshot.data as DatabaseNote;
               _setupTextControllerListener();
 
-              return AutoSizeTextField(
+              return TextField(
                 controller: _textController,
                 style: const TextStyle(fontSize: 20),
-                semanticsLabel: "What's in your mind?",
                 autofocus: true,
                 maxLines: null,
                 decoration: const InputDecoration(
@@ -139,7 +136,6 @@ class _NewNoteViewState extends State<NewNoteView> {
           Icons.arrow_back_ios,
           color: Colors.black54,
         ),
-      
       ),
     );
   }

@@ -4,7 +4,7 @@ const loginPage = '/login/';
 const registerPage = '/register/';
 const NotesPage = 'landingView';
 const verifyEmailPage = 'verifyEmail';
-const NewNotePage = '/newNote/';
+const WriteEditNotePage = '/newNote/';
 
 // class EnterView {
 //   void Notes() {

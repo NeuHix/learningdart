@@ -3,3 +3,4 @@
 /.vscode/
 /.fleet/
 /build/
+/pubspec.lock

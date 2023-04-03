@@ -23,7 +23,7 @@ class Authenticate implements AuthProvider {
   @override
   AuthUser? get currentUser  {
     final user =  FirebaseAuth.instance.currentUser;
-    final userEmail = FirebaseAuth.instance.currentUser?.email;
+
     user?.reload();
     if (user != null) {
       return AuthUser.fromFirebase(user);

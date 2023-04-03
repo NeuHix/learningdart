@@ -4,7 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:learningdart/firebase_options.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:learningdart/views/Notes_View.dart';
-import 'package:learningdart/views/new_note_view.dart';
+import 'package:learningdart/views/writeEditNoteView.dart';
 import 'views/VerifyEmailView.dart';
 import 'package:learningdart/views/Login_View.dart';
 import 'package:learningdart/views/register_view.dart';
@@ -21,9 +21,7 @@ user interaction like icon, buttons, text.
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -36,8 +34,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true
+        useMaterial3: true,
       ),
       home: const Master(),
       builder: EasyLoading.init(),
@@ -46,7 +43,7 @@ class MyApp extends StatelessWidget {
         registerPage: (context) => const RegisterView(),
         NotesPage: (context) => const NotesView(),
         verifyEmailPage: (context) => const VerifyEmailView(),
-        NewNotePage: (context) => const NewNoteView(),
+        WriteEditNotePage: (context) => const WriteEditNoteView(),
       },
       debugShowCheckedModeBanner: false,
     );
@@ -78,7 +75,6 @@ class Master extends StatelessWidget {
                 dev.log(user.toString());
                 return const LoginView();
               }
-              
             default:
               return const Center(
                 child: CircularProgressIndicator(),

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learningdart/constants/routes.dart';
-import 'package:learningdart/services/auth/auth_exception.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:simple_connection_checker/simple_connection_checker.dart';
 import '../utilities/child_dialogs.dart';
@@ -133,7 +132,7 @@ class _LoginViewState extends State<LoginView> {
                             final email = _email.text;
                             final password = _password.text;
 
-                            await AuthService.firebase().logIn(
+                            await FirebaseAuth.instance.signInWithEmailAndPassword(
                               email: email,
                               password: password,
                             );
@@ -161,34 +160,13 @@ class _LoginViewState extends State<LoginView> {
                                 }
                               });
                             }
+
                           } on FirebaseAuthException catch (e) {
-                            dev.log(e.code);
-                          } on WrongPasswordAuthException {
-                            Navigator.of(context, rootNavigator: true).pop();
-                            showErrorDialog(context, "Wrong Password");
-                          } on UserNotFoundAuthException {
-                            Navigator.of(context, rootNavigator: true).pop();
-                            showErrorDialog(context, "User not found");
+                              if (mounted) {
+                                Navigator.of(context, rootNavigator: true).pop();
+                                showErrorDialog(context, e.code);
+                              }
                           }
-                          //
-                          // try {
-                          //   final test = FirebaseAuth.instance.idTokenChanges();
-                          //   dev.log("$test");
-                          //
-                          //   var user = FirebaseAuth.instance.currentUser;
-                          //   if (user != null) {
-                          //
-                          //     if (mounted ) {
-                          //       Navigator.of(context, rootNavigator: true).pop();
-                          //     }
-                          //
-                          //     Fluttertoast.showToast(
-                          //         msg: "Logged in! Welcome.");
-                          //     if (mounted) {
-                          //       Navigator.of(context).pushNamedAndRemoveUntil(
-                          //           NotesPage, (route) => false);
-                          //     }
-                          //   }
                         } else {
                           if (mounted) {
                             Navigator.of(context, rootNavigator: true).pop();
@@ -196,13 +174,6 @@ class _LoginViewState extends State<LoginView> {
                           }
                         }
                       },
-                      // style: ButtonStyle(
-                      //   backgroundColor: MaterialStateProperty.all<Color>(
-                      //     Colors.green,
-                      //   ), //button color
-                      //   foregroundColor:
-                      //       MaterialStateProperty.all<Color>(Colors.white),
-                      // ),
                       child: const Text('Login Now.'),
                     ),
                     const SizedBox(

@@ -18,4 +18,11 @@ Future<bool> showLogOutDialog(BuildContext context) {
   ).then((value) => value ?? false);
 }
 
-
+Future<bool> showDeleteDialog(BuildContext context) {
+  return genericDialog(
+    context: context,
+    title: "Delete Note?",
+    text: "Are you sure ?",
+    listOfActions: {"yes!": true, "stop!": false},
+  ).then((value) => value ?? false);
+}

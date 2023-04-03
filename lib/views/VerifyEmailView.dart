@@ -60,8 +60,9 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                   dev.log(user.toString());
                   if (user?.isEmailVerified == true) {
                     changeStatusToVerified();
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil(NotesPage, (route) => false);
+                    if (mounted) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(NotesPage, (route) => false);
+                    }
                   } else if (user?.isEmailVerified == false) {
                     changeStatusToNotVerified();
                   }
