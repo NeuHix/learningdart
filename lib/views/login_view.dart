@@ -156,7 +156,7 @@ class _LoginViewState extends State<LoginView> {
                                   Navigator.of(context, rootNavigator: true)
                                       .pop();
                                   Navigator.pushNamedAndRemoveUntil(
-                                      context, NotesPage, (route) => false);
+                                      context, notesPage, (route) => false);
                                 }
                               });
                             }

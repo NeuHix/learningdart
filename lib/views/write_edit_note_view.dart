@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learningdart/constants/routes.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:learningdart/services/crud/notes_service.dart';
+import 'package:learningdart/utilities/get_arguments.dart';
 
 class WriteEditNoteView extends StatefulWidget {
   const WriteEditNoteView({Key? key}) : super(key: key);
@@ -12,25 +13,30 @@ class WriteEditNoteView extends StatefulWidget {
 
 class _WriteEditNoteViewState extends State<WriteEditNoteView> {
   DatabaseNote? _note;
-  // final floatingButtonColor = const Color(0xffc2e7ff);
-  // DatabaseNote? tempNote;
+
   late final NotesService _notesService;
   late final TextEditingController _textController;
 
-  Future<DatabaseNote> createNewNote() async {
+  Future<DatabaseNote> createOrGetExistingNote(BuildContext) async {
+
+    final widgetNote = context.getArgument<DatabaseNote>();
+
+    if (widgetNote != null) {
+      _note = widgetNote;
+      _textController.text = widgetNote.text;
+      return widgetNote;
+    }
+
     final existingNote = _note;
-    // final tempExistingNote = tempNote;
     if (existingNote != null) {
       return existingNote;
     }
-    // if (tempExistingNote != null) {
-    //   return tempExistingNote;
-    //
-    // }
     final email = AuthService.firebase().currentUser!.email!;
     final owner = await _notesService.getUser(email: email);
     // _notesService.createNote(owner: owner);
-    return _notesService.createNote(owner: owner);
+    final newNote = await _notesService.createNote(owner: owner);
+    _note = newNote;
+    return newNote;
   }
 
   void _deleteNoteIfEmpty() {
@@ -95,13 +101,11 @@ class _WriteEditNoteViewState extends State<WriteEditNoteView> {
         centerTitle: true,
       ),
       body: FutureBuilder(
-        future: createNewNote(),
+        future: createOrGetExistingNote(BuildContext),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              _note = snapshot.data as DatabaseNote;
               _setupTextControllerListener();
-
               return TextField(
                 controller: _textController,
                 style: const TextStyle(fontSize: 20),
@@ -123,7 +127,7 @@ class _WriteEditNoteViewState extends State<WriteEditNoteView> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.of(context)
-              .pushNamedAndRemoveUntil(NotesPage, (route) => false);
+              .pushNamedAndRemoveUntil(notesPage, (route) => false);
         },
         label: const Text(
           "back",

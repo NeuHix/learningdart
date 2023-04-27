@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as dev show log;
 import 'package:learningdart/constants/routes.dart';
 import 'package:learningdart/enums/menu_actions.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
@@ -20,11 +19,8 @@ class _NotesViewState extends State<NotesView> {
 
   final _notesService = NotesService();
 
-  // final currentColor = const Color(0xffc2e7ff);
-  // final selectedColor = const Color(0xff9db1c7);
   int _selectedIndex = 0;
 
-  
   String getUserName() {
     var userName = FirebaseAuth.instance.currentUser?.displayName;
     
@@ -64,7 +60,7 @@ class _NotesViewState extends State<NotesView> {
           /// adds a shortcut to return to [NotesView].
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, WriteEditNotePage);
+              Navigator.pushNamed(context, writeEditNotePage);
             },
             icon: const Icon(Icons.add),
           ),
@@ -79,20 +75,12 @@ class _NotesViewState extends State<NotesView> {
                   final shouldLogout = await showLogOutDialog(context);
                   if (shouldLogout) {
                     await AuthService.firebase().logOut();
-                    // Fluttertoast.showToast(msg: "Cool! Now Login Again.");
-                    if (!mounted) {}
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      loginPage,
-                      (route) => false,
-                    );
-                  } else {
-                    // Fluttertoast.showToast(
-                    //     msg: "Never do that Again!",
-                    //     toastLength: Toast.LENGTH_SHORT,
-                    //     gravity: ToastGravity.BOTTOM,
-                    //     timeInSecForIosWeb: 1,
-                    //     textColor: Colors.white,
-                    //     fontSize: 16.0);
+                    if (mounted) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        loginPage,
+                        (route) => false,
+                      );
+                    }
                   }
                   break;
               }
@@ -126,6 +114,9 @@ class _NotesViewState extends State<NotesView> {
                           itemBuilder: (context, index) {
                             final note = allNotes[index];
                             return ListTile(
+                              onTap: () {
+                                Navigator.pushNamed(context, writeEditNotePage, arguments: note);
+                              },
                               title: Text(
                                 note.text,
                                 maxLines: 3,
@@ -149,10 +140,6 @@ class _NotesViewState extends State<NotesView> {
                                       }
                                     },
                                   ),
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.edit),
-                                  )
                                 ],
                               ),
                               leading: const Icon(Icons.note_add),
@@ -185,7 +172,7 @@ class _NotesViewState extends State<NotesView> {
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          Navigator.pushNamed(context, WriteEditNotePage);
+          Navigator.pushNamed(context, writeEditNotePage);
         },
         label: const Text(
           "Note",
@@ -222,7 +209,6 @@ class _NotesViewState extends State<NotesView> {
         ],
         onTap: _onItemTapped,
         currentIndex: _selectedIndex,
-        key: const Key("Cool"),
       ),
     );
   }
